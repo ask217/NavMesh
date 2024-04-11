@@ -27,6 +27,8 @@ public class Guard : MonoBehaviour
     bool isCollision = false;
 
     // 타겟팅 관련 변수
+    RaycastHit hitInfo;
+
     bool isTargeting = false;
 
     //이동 관련 변수
@@ -91,6 +93,11 @@ public class Guard : MonoBehaviour
         print("isCollision: " + isCollision);
         print("Guard State: " + state);
 
+        if(hitInfo.transform != null)
+        {
+            print("HitInfo: " + hitInfo.transform.name);
+        }
+
         Debug.DrawRay(transform.position, target.position - transform.position, Color.blue);
 
         #endregion
@@ -103,7 +110,7 @@ public class Guard : MonoBehaviour
             RaycastHit hitInfo;
 
             if(Physics.Raycast(transform.position, target.position - transform.position, out hitInfo))
-            {                
+            {
                 print("HitInfo: " + hitInfo.transform.name);
                 state = GuardState.combat;
             }
