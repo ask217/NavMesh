@@ -29,8 +29,6 @@ public class Guard : MonoBehaviour
     // 타겟팅 관련 변수
     RaycastHit hitInfo;
 
-    bool isTargeting = false;
-
     //이동 관련 변수
     private int curNode = 0;
     public List<Transform> wayPoint = new List<Transform>();
@@ -143,7 +141,7 @@ public class Guard : MonoBehaviour
         }
         else
         {
-            StopAllCoroutines();
+            StopCoroutine(ModeChanger());
         }
 
         agent.destination = target.position;
@@ -185,7 +183,6 @@ public class Guard : MonoBehaviour
         {
             Gizmos.color = new Color(1.0f, 1.0f, 1.0f, 0.3f);
             Gizmos.DrawSphere(wayPoint[i].transform.position, 2);
-            Gizmos.DrawWireSphere(wayPoint[i].transform.position, 20f);
 
             if (i < wayPoint.Count - 1)
             {
