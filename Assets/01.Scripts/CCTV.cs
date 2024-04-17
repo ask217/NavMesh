@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class CCTV : MonoBehaviour
@@ -11,6 +12,9 @@ public class CCTV : MonoBehaviour
         discover,
     }
 
+    public Animator cameraAnim;
+    private MeshRenderer camRenderer;
+
     CCTVState state;
 
     [SerializeField]
@@ -20,7 +24,7 @@ public class CCTV : MonoBehaviour
 
     void Start()
     {
-        
+        camRenderer = GetComponent<MeshRenderer>();
     }
 
     void Update()
@@ -29,10 +33,11 @@ public class CCTV : MonoBehaviour
         {
             target = GameObject.FindWithTag("Player").transform;
         }
+
         switch(state)
         {
             case CCTVState.Idle:
-                //TODO: 이동/회전
+                //TODO: 회전
                 break;
             case CCTVState.Alert:
                 //TODO: 잠시 멈추고 확인
@@ -40,6 +45,17 @@ public class CCTV : MonoBehaviour
             case CCTVState.discover:
                 //TODO: 경보 울리기
                 break;
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.transform.tag == target.tag)
+        {
+            //TODO: state 설정
+            cameraAnim.enabled = false;
+            Color red = new Color(0.6f, 0.1f, 0.1f, 0.3f);
+            camRenderer.materials[0].color = red;
         }
     }
 }
