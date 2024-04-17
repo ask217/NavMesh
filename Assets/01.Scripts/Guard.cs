@@ -14,6 +14,7 @@ public class Guard : MonoBehaviour
     }
 
     NavMeshAgent agent;
+    Animator guardAnim;
 
     GuardState state;
 
@@ -33,11 +34,20 @@ public class Guard : MonoBehaviour
     private int curNode = 0;
     public List<Transform> wayPoint = new List<Transform>();
 
+    bool playerDetection;
+
+    int NavigationStep = 0;
+
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        guardAnim = GetComponent<Animator>();
+
         target = GameObject.FindWithTag("Player").transform;
+
+        playerDetection = false;
+        NavigationStep = 0;
     }
 
     void Update()
@@ -86,6 +96,12 @@ public class Guard : MonoBehaviour
             isCollision = false;
         }
 
+        if((!agent.pathPending && agent.remainingDistance < 3f) && playerDetection)
+        {
+            playerDetection = false;
+            StartCoroutine(Navigation());
+        }
+
         #region 디버깅
         
         print("isCollision: " + isCollision);
@@ -127,12 +143,16 @@ public class Guard : MonoBehaviour
 
     void Alert()
     {
-        StopAllCoroutines();
-        StartCoroutine(ModeChanger());
         angleRange = 120f;
         radius = 5f;
 
-        Move();
+        if(!playerDetection)
+        {
+            StopAllCoroutines();
+            StartCoroutine(ModeChanger());
+            
+            Move();
+        }
     }
 
     void Targeting()
@@ -149,11 +169,54 @@ public class Guard : MonoBehaviour
         agent.destination = target.position;
     }
 
+    public void CCTVDetection(Transform playerPos)
+    {
+        state = GuardState.Alert;
+
+        agent.destination = playerPos.position;
+    }
+
     private void MoveToNext()
     {
         agent.destination = wayPoint[curNode].position;
 
         curNode++;
+    }
+
+    IEnumerator Navigation()
+    {
+        StartCoroutine(Rotate(0.5f, -60));
+        yield return new WaitForSeconds(1f);
+        yield return new WaitUntil(() => NavigationStep > 0);
+        StartCoroutine(Rotate(1f, 120));
+        yield return new WaitForSeconds(1f);
+        yield return new WaitUntil(() => NavigationStep > 1);
+        StartCoroutine(Rotate(0.5f, -60));
+        yield return new WaitForSeconds(1f);
+        yield return new WaitUntil(() => NavigationStep > 2);
+        StartCoroutine(ModeChanger());
+    }
+
+    IEnumerator Rotate( float duration, float yAngle )
+    {
+        Vector3 startForward = transform.forward;
+        Vector3 targetForward = Quaternion.Euler(0f, yAngle, 0f ) * startForward;
+        float ratio = 0f;
+        float vel = 1f / duration;
+        while( ratio < 1f )
+        {
+            transform.forward = Vector3.Slerp( startForward, targetForward, ratio ); //필요시 AnimationCurve나 EasingFunction검토.
+            yield return null;
+            ratio += Time.deltaTime * vel;
+        }
+        transform.forward = targetForward;
+
+        if(NavigationStep >= 4)
+        {
+            NavigationStep = -1;
+        }
+
+        NavigationStep++;
     }
 
     IEnumerator ModeChanger()
@@ -162,14 +225,14 @@ public class Guard : MonoBehaviour
         {
             case GuardState.Alert:
                 yield return new WaitForSeconds(5f);
+                state = GuardState.Idle;
                 break;
 
             case GuardState.combat:
                 yield return new WaitForSeconds(2f);
+                state = GuardState.Alert;
                 break;
         }
-
-        state = GuardState.Idle;
     }
 
     private void OnDrawGizmos()

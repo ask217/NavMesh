@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.Audio;
 
 public class CCTV : MonoBehaviour
 {
     enum CCTVState
     {
         Idle,
-        Alert,
         discover,
     }
 
@@ -22,6 +23,8 @@ public class CCTV : MonoBehaviour
 
     public float radius = 3f; // 탐색 범위 반지름
 
+    Transform playerPos;
+
     void Start()
     {
         camRenderer = GetComponent<MeshRenderer>();
@@ -29,33 +32,75 @@ public class CCTV : MonoBehaviour
 
     void Update()
     {
-        if(target == null)
+        if (target == null)
         {
             target = GameObject.FindWithTag("Player").transform;
         }
 
-        switch(state)
+        switch (state)
         {
             case CCTVState.Idle:
-                //TODO: 회전
-                break;
-            case CCTVState.Alert:
-                //TODO: 잠시 멈추고 확인
+                Idle();
                 break;
             case CCTVState.discover:
-                //TODO: 경보 울리기
+                DisCover();
                 break;
+        }
+    }
+
+    void Idle()
+    {
+        if (!cameraAnim.enabled)
+        {
+            cameraAnim.enabled = true;
+            Color green = new Color(0.1f, 0.6f, 0.1f, 0.3f);
+            camRenderer.materials[0].color = green;
+        }
+    }
+
+    void DisCover()
+    {
+        if (cameraAnim.enabled)
+        {
+            cameraAnim.enabled = false;
+            Color red = new Color(0.6f, 0.1f, 0.1f, 0.3f);
+            camRenderer.materials[0].color = red;
+        }
+
+        //TODO: Play Sound and start function
+
+        Collider[] guards = Physics.OverlapSphere(playerPos.position, 10.0f);
+
+        for (int i = 0; i < guards.Length; i++)
+        {
+            guards[i].GetComponent<Guard>().CCTVDetection(playerPos);
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.transform.tag == target.tag)
+        if (other.transform.tag == target.tag)
         {
-            //TODO: state 설정
-            cameraAnim.enabled = false;
-            Color red = new Color(0.6f, 0.1f, 0.1f, 0.3f);
-            camRenderer.materials[0].color = red;
+            playerPos = other.transform;
+
+            StopCoroutine(Unbinding());
+
+            state = CCTVState.discover;
         }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.transform.tag == target.tag)
+        {
+            StartCoroutine(Unbinding());
+        }
+    }
+
+    IEnumerator Unbinding()
+    {
+        yield return new WaitForSeconds(3f);
+
+        state = CCTVState.Idle;
     }
 }
