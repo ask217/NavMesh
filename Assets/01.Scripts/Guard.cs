@@ -107,7 +107,7 @@ public class Guard : MonoBehaviour
         {
             RaycastHit hitInfo;
 
-            if(Physics.Raycast(transform.position, target.position - transform.position, out hitInfo))
+            if(Physics.Raycast(transform.position, target.position - transform.position, out hitInfo) && !GameManager.instance.isGameOver)
             {
                 print("HitInfo: " + hitInfo.transform.name);
                 state = GuardState.combat;
@@ -129,8 +129,10 @@ public class Guard : MonoBehaviour
     {
         StopAllCoroutines();
         StartCoroutine(ModeChanger());
-        angleRange = 90f;
+        angleRange = 120f;
         radius = 5f;
+
+        Move();
     }
 
     void Targeting()
