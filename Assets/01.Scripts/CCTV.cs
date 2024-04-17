@@ -69,11 +69,17 @@ public class CCTV : MonoBehaviour
 
         //TODO: Play Sound and start function
 
-        Collider[] guards = Physics.OverlapSphere(playerPos.position, 10.0f);
+        Collider[] colliders = Physics.OverlapSphere(playerPos.position, 30.0f);
 
-        for (int i = 0; i < guards.Length; i++)
+        if (colliders.Length > 0)
         {
-            guards[i].GetComponent<Guard>().CCTVDetection(playerPos);
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                if(colliders[i].tag == "Guard")
+                {
+                    colliders[i].GetComponent<Guard>().CCTVDetection(playerPos);
+                }
+            }
         }
     }
 
@@ -81,6 +87,7 @@ public class CCTV : MonoBehaviour
     {
         if (other.transform.tag == target.tag)
         {
+            print("ontriggerEnter");
             playerPos = other.transform;
 
             StopCoroutine(Unbinding());

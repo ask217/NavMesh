@@ -52,12 +52,12 @@ public class Guard : MonoBehaviour
 
     void Update()
     {
-        if(target == null)
+        if (target == null)
         {
             target = GameObject.FindWithTag("Player").transform;
         }
 
-        switch(state)
+        switch (state)
         {
             case GuardState.Idle:
                 Move();
@@ -96,18 +96,17 @@ public class Guard : MonoBehaviour
             isCollision = false;
         }
 
-        if((!agent.pathPending && agent.remainingDistance < 3f) && playerDetection)
+        if ((!agent.pathPending && agent.remainingDistance < 3f) && playerDetection)
         {
-            playerDetection = false;
             StartCoroutine(Navigation());
         }
 
         #region 디버깅
-        
+
         print("isCollision: " + isCollision);
         print("Guard State: " + state);
 
-        if(hitInfo.transform != null)
+        if (hitInfo.transform != null)
         {
             print("HitInfo: " + hitInfo.transform.name);
         }
@@ -119,51 +118,54 @@ public class Guard : MonoBehaviour
 
     void Move()
     {
-        if(isCollision)
+        if (!playerDetection)
         {
-            RaycastHit hitInfo;
-
-            if(Physics.Raycast(transform.position, target.position - transform.position, out hitInfo) && !GameManager.instance.isGameOver)
+            if (isCollision)
             {
-                print("HitInfo: " + hitInfo.transform.name);
-                state = GuardState.combat;
-            }
-        }
+                RaycastHit hitInfo;
 
-        if(!agent.pathPending && agent.remainingDistance < 2f)
-        {
-            MoveToNext();
-        }
-        
-        if(curNode == wayPoint.Count)
-        {
-            curNode = 0;
+                if (Physics.Raycast(transform.position, target.position - transform.position, out hitInfo) && !GameManager.instance.isGameOver)
+                {
+                    print("HitInfo: " + hitInfo.transform.name);
+                    state = GuardState.combat;
+                }
+            }
+
+            if (!agent.pathPending && agent.remainingDistance < 2f)
+            {
+                MoveToNext();
+            }
+
+            if (curNode == wayPoint.Count)
+            {
+                curNode = 0;
+            }
         }
     }
 
     void Alert()
     {
         angleRange = 120f;
-        radius = 5f;
+        radius = 7f;
 
-        if(!playerDetection)
+        if (!playerDetection)
         {
-            StopAllCoroutines();
-            StartCoroutine(ModeChanger());
-            
+            StopCoroutine(ModeChanger(0f));
+            StartCoroutine(ModeChanger(5f));
+
             Move();
         }
     }
 
     void Targeting()
     {
-        if(!isCollision)
+        if (!isCollision)
         {
-            StartCoroutine(ModeChanger());
+            StartCoroutine(ModeChanger(3f));
         }
         else
         {
-            StopCoroutine(ModeChanger());
+            StopAllCoroutines();
         }
 
         agent.destination = target.position;
@@ -171,6 +173,8 @@ public class Guard : MonoBehaviour
 
     public void CCTVDetection(Transform playerPos)
     {
+        playerDetection = true;
+
         state = GuardState.Alert;
 
         agent.destination = playerPos.position;
@@ -180,11 +184,19 @@ public class Guard : MonoBehaviour
     {
         agent.destination = wayPoint[curNode].position;
 
+        if (curNode == wayPoint.Count)
+        {
+            curNode = -1;
+        }
+
         curNode++;
     }
 
     IEnumerator Navigation()
     {
+        print("Navigation Start");
+        playerDetection = false;
+        agent.isStopped = true;
         StartCoroutine(Rotate(0.5f, -60));
         yield return new WaitForSeconds(1f);
         yield return new WaitUntil(() => NavigationStep > 0);
@@ -194,24 +206,26 @@ public class Guard : MonoBehaviour
         StartCoroutine(Rotate(0.5f, -60));
         yield return new WaitForSeconds(1f);
         yield return new WaitUntil(() => NavigationStep > 2);
-        StartCoroutine(ModeChanger());
+        agent.isStopped = false;
+        MoveToNext();
+        StartCoroutine(ModeChanger(10f));
     }
 
-    IEnumerator Rotate( float duration, float yAngle )
+    IEnumerator Rotate(float duration, float yAngle)
     {
         Vector3 startForward = transform.forward;
-        Vector3 targetForward = Quaternion.Euler(0f, yAngle, 0f ) * startForward;
+        Vector3 targetForward = Quaternion.Euler(0f, yAngle, 0f) * startForward;
         float ratio = 0f;
         float vel = 1f / duration;
-        while( ratio < 1f )
+        while (ratio < 1f)
         {
-            transform.forward = Vector3.Slerp( startForward, targetForward, ratio ); //필요시 AnimationCurve나 EasingFunction검토.
+            transform.forward = Vector3.Slerp(startForward, targetForward, ratio);
             yield return null;
             ratio += Time.deltaTime * vel;
         }
         transform.forward = targetForward;
 
-        if(NavigationStep >= 4)
+        if (NavigationStep >= 3)
         {
             NavigationStep = -1;
         }
@@ -219,17 +233,19 @@ public class Guard : MonoBehaviour
         NavigationStep++;
     }
 
-    IEnumerator ModeChanger()
+    IEnumerator ModeChanger(float WaitSeconds)
     {
-        switch(state)
+        switch (state)
         {
             case GuardState.Alert:
-                yield return new WaitForSeconds(5f);
+                yield return new WaitForSeconds(WaitSeconds);
+                angleRange = 75f;
+                radius = 5f;
                 state = GuardState.Idle;
                 break;
 
             case GuardState.combat:
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(WaitSeconds);
                 state = GuardState.Alert;
                 break;
         }
