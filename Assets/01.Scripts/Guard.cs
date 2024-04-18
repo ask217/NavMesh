@@ -165,6 +165,11 @@ public class Guard : MonoBehaviour
         }
         else
         {
+            if(agent.isStopped == true)
+            {
+                agent.isStopped = false;
+            }
+            
             StopAllCoroutines();
         }
 
