@@ -50,12 +50,8 @@ public class CCTV : MonoBehaviour
 
     void Idle()
     {
-        if (!cameraAnim.enabled)
-        {
-            cameraAnim.enabled = true;
-            Color green = new Color(0.1f, 0.6f, 0.1f, 0.3f);
-            camRenderer.materials[0].color = green;
-        }
+        Color green = new Color(0.1f, 0.6f, 0.1f, 0.3f);
+        camRenderer.materials[0].color = green;
     }
 
     void DisCover()
@@ -75,7 +71,7 @@ public class CCTV : MonoBehaviour
         {
             for (int i = 0; i < colliders.Length; i++)
             {
-                if(colliders[i].tag == "Guard")
+                if (colliders[i].tag == "Guard")
                 {
                     colliders[i].GetComponent<Guard>().CCTVDetection(playerPos);
                 }
@@ -100,6 +96,8 @@ public class CCTV : MonoBehaviour
     {
         if (other.transform.tag == target.tag)
         {
+            cameraAnim.enabled = true;
+
             StartCoroutine(Unbinding());
         }
     }
