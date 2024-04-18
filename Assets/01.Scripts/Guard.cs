@@ -72,7 +72,7 @@ public class Guard : MonoBehaviour
         }
         #endregion
 
-    #region  탐색
+        #region  탐색
         Vector3 distance = target.position - transform.position;
 
         if (distance.magnitude <= radius)
@@ -115,8 +115,6 @@ public class Guard : MonoBehaviour
             print("HitInfo: " + hitInfo.transform.name);
         }
 
-        Debug.DrawRay(transform.position, target.position - transform.position, Color.blue);
-
         #endregion
     }
 
@@ -124,6 +122,9 @@ public class Guard : MonoBehaviour
     {
         if (!playerDetection)
         {
+            angleRange = 75f;
+            radius = 5f;
+
             if (isCollision)
             {
                 RaycastHit hitInfo;
@@ -131,7 +132,10 @@ public class Guard : MonoBehaviour
                 if (Physics.Raycast(transform.position, target.position - transform.position, out hitInfo) && !GameManager.instance.isGameOver)
                 {
                     print("HitInfo: " + hitInfo.transform.name);
-                    state = GuardState.combat;
+                    if (hitInfo.transform.tag == target.tag)
+                    {
+                        state = GuardState.combat;
+                    }
                 }
             }
 
@@ -169,34 +173,36 @@ public class Guard : MonoBehaviour
         }
         else
         {
-            if(agent.isStopped == true)
+            if (agent.isStopped == true)
             {
                 agent.isStopped = false;
             }
-            
+
             StopAllCoroutines();
         }
+
+        Debug.DrawRay(transform.position, target.position - transform.position, Color.blue);
 
         agent.destination = target.position;
     }
 
-    public void CCTVDetection(Transform playerPos)
+    public void CCTVDetection(Vector3 playerPos)
     {
         playerDetection = true;
 
         state = GuardState.Alert;
 
-        agent.destination = playerPos.position;
+        agent.destination = playerPos;
     }
 
     private void MoveToNext()
     {
-        agent.destination = wayPoint[curNode].position;
-
-        if (curNode == wayPoint.Count)
+        if (curNode >= wayPoint.Count)
         {
-            curNode = -1;
+            curNode = 0;
         }
+
+        agent.destination = wayPoint[curNode].position;
 
         curNode++;
     }
@@ -204,7 +210,6 @@ public class Guard : MonoBehaviour
     IEnumerator Navigation()
     {
         print("Navigation Start");
-        playerDetection = false;
         agent.isStopped = true;
         StartCoroutine(Rotate(0.5f, -60));
         yield return new WaitForSeconds(1f);
@@ -212,12 +217,10 @@ public class Guard : MonoBehaviour
         StartCoroutine(Rotate(1f, 120));
         yield return new WaitForSeconds(1f);
         yield return new WaitUntil(() => NavigationStep > 1);
-        StartCoroutine(Rotate(0.5f, -60));
-        yield return new WaitForSeconds(1f);
-        yield return new WaitUntil(() => NavigationStep > 2);
         agent.isStopped = false;
+        NavigationStep = 0;
         MoveToNext();
-        StartCoroutine(ModeChanger(10f));
+        StartCoroutine(ModeChanger(15f));
     }
 
     IEnumerator Rotate(float duration, float yAngle)
@@ -234,23 +237,21 @@ public class Guard : MonoBehaviour
         }
         transform.forward = targetForward;
 
-        if (NavigationStep >= 3)
-        {
-            NavigationStep = -1;
-        }
-
         NavigationStep++;
     }
 
     IEnumerator ModeChanger(float WaitSeconds)
     {
+        print(WaitSeconds);
         switch (state)
         {
             case GuardState.Alert:
                 yield return new WaitForSeconds(WaitSeconds);
-                angleRange = 75f;
-                radius = 5f;
                 state = GuardState.Idle;
+                if(playerDetection)
+                {
+                    playerDetection = false;
+                }
                 break;
 
             case GuardState.combat:
@@ -262,7 +263,7 @@ public class Guard : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         // 탐색 범위 기즈모
         Handles.color = new Color(1f, 0f, 0f, 0.2f);
         // DrawSolidArc(시작점, 노멀벡터(법선벡터), 그려줄 방향 벡터, 각도, 반지름)
@@ -289,6 +290,6 @@ public class Guard : MonoBehaviour
                 }
             }
         }
-        #endif
+#endif
     }
 }

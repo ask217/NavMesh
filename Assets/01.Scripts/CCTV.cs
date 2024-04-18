@@ -23,7 +23,7 @@ public class CCTV : MonoBehaviour
 
     public float radius = 3f; // 탐색 범위 반지름
 
-    Transform playerPos;
+    Vector3 playerPos;
 
     void Start()
     {
@@ -69,7 +69,7 @@ public class CCTV : MonoBehaviour
 
         //TODO: Play Sound and start function
 
-        Collider[] colliders = Physics.OverlapSphere(playerPos.position, 30.0f);
+        Collider[] colliders = Physics.OverlapSphere(playerPos, 30.0f);
 
         if (colliders.Length > 0)
         {
@@ -88,7 +88,7 @@ public class CCTV : MonoBehaviour
         if (other.transform.tag == target.tag)
         {
             print("ontriggerEnter");
-            playerPos = other.transform;
+            playerPos = other.transform.position;
 
             StopCoroutine(Unbinding());
 
