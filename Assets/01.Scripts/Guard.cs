@@ -52,6 +52,7 @@ public class Guard : MonoBehaviour
 
     void Update()
     {
+        #region 상태머신
         if (target == null)
         {
             target = GameObject.FindWithTag("Player").transform;
@@ -69,7 +70,9 @@ public class Guard : MonoBehaviour
                 Targeting();
                 break;
         }
+        #endregion
 
+    #region  탐색
         Vector3 distance = target.position - transform.position;
 
         if (distance.magnitude <= radius)
@@ -95,6 +98,7 @@ public class Guard : MonoBehaviour
         {
             isCollision = false;
         }
+        #endregion
 
         if ((!agent.pathPending && agent.remainingDistance < 3f) && playerDetection)
         {
@@ -258,6 +262,7 @@ public class Guard : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        #if UNITY_EDITOR
         // 탐색 범위 기즈모
         Handles.color = new Color(1f, 0f, 0f, 0.2f);
         // DrawSolidArc(시작점, 노멀벡터(법선벡터), 그려줄 방향 벡터, 각도, 반지름)
@@ -284,5 +289,6 @@ public class Guard : MonoBehaviour
                 }
             }
         }
+        #endif
     }
 }
