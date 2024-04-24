@@ -107,12 +107,12 @@ public class Guard : MonoBehaviour
 
         #region 디버깅
 
-        print("isCollision: " + isCollision);
-        print("Guard State: " + state);
+        // print("isCollision: " + isCollision);
+        // print("Guard State: " + state);
 
         if (hitInfo.transform != null)
         {
-            print("HitInfo: " + hitInfo.transform.name);
+            // print("HitInfo: " + hitInfo.transform.name);
         }
 
         #endregion
@@ -179,11 +179,19 @@ public class Guard : MonoBehaviour
             }
 
             StopAllCoroutines();
+
+            if (Physics.Raycast(transform.position, target.position - transform.position, out hitInfo) && !GameManager.instance.isGameOver)
+            {
+                Debug.DrawRay(transform.position, target.position - transform.position, Color.blue);
+
+                print("HitInfo: " + hitInfo.transform.name);
+
+                if (hitInfo.transform.tag == target.tag)
+                {
+                    agent.destination = hitInfo.transform.position;
+                }
+            }
         }
-
-        Debug.DrawRay(transform.position, target.position - transform.position, Color.blue);
-
-        agent.destination = target.position;
     }
 
     public void CCTVDetection(Vector3 playerPos)
@@ -248,7 +256,7 @@ public class Guard : MonoBehaviour
             case GuardState.Alert:
                 yield return new WaitForSeconds(WaitSeconds);
                 state = GuardState.Idle;
-                if(playerDetection)
+                if (playerDetection)
                 {
                     playerDetection = false;
                 }

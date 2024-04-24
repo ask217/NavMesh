@@ -46,12 +46,18 @@ public class CCTV : MonoBehaviour
                 DisCover();
                 break;
         }
+
+        print(gameObject.name + " camAnim.enabled : " + cameraAnim.enabled);
     }
 
     void Idle()
     {
-        Color green = new Color(0.1f, 0.6f, 0.1f, 0.3f);
-        camRenderer.materials[0].color = green;
+        if (!cameraAnim.enabled)
+        {
+            cameraAnim.enabled = true;
+            Color green = new Color(0.1f, 0.6f, 0.1f, 0.3f);
+            camRenderer.materials[0].color = green;
+        }
     }
 
     void DisCover()
@@ -96,8 +102,6 @@ public class CCTV : MonoBehaviour
     {
         if (other.transform.tag == target.tag)
         {
-            cameraAnim.enabled = true;
-
             StartCoroutine(Unbinding());
         }
     }
