@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 7101509407450047961}
   - component: {fileID: 514381494011077095}
   - component: {fileID: 6529092093719052621}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: CamLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}

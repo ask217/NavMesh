@@ -31,6 +31,8 @@ public class Guard : MonoBehaviour
     RaycastHit hitInfo;
 
     //이동 관련 변수
+    public float idleSpeed;
+    public float AlertSpeed;
     private int curNode = 0;
     public List<Transform> wayPoint = new List<Transform>();
 
@@ -110,10 +112,10 @@ public class Guard : MonoBehaviour
         // print("isCollision: " + isCollision);
         // print("Guard State: " + state);
 
-        if (hitInfo.transform != null)
-        {
-            // print("HitInfo: " + hitInfo.transform.name);
-        }
+        // if (hitInfo.transform != null)
+        // {
+        //     print("HitInfo: " + hitInfo.transform.name);
+        // }
 
         #endregion
     }
@@ -135,6 +137,8 @@ public class Guard : MonoBehaviour
                     if (hitInfo.transform.tag == target.tag)
                     {
                         state = GuardState.combat;
+
+                        agent.speed = AlertSpeed;
                     }
                 }
             }
@@ -153,6 +157,7 @@ public class Guard : MonoBehaviour
 
     void Alert()
     {
+        
         angleRange = 120f;
         radius = 7f;
 
@@ -184,7 +189,7 @@ public class Guard : MonoBehaviour
             {
                 Debug.DrawRay(transform.position, target.position - transform.position, Color.blue);
 
-                print("HitInfo: " + hitInfo.transform.name);
+                // print("HitInfo: " + hitInfo.transform.name);
 
                 if (hitInfo.transform.tag == target.tag)
                 {
@@ -199,6 +204,8 @@ public class Guard : MonoBehaviour
         playerDetection = true;
 
         state = GuardState.Alert;
+        
+        agent.speed = AlertSpeed;
 
         agent.destination = playerPos;
     }
@@ -250,12 +257,15 @@ public class Guard : MonoBehaviour
 
     IEnumerator ModeChanger(float WaitSeconds)
     {
-        print(WaitSeconds);
+        // print(WaitSeconds);
         switch (state)
         {
             case GuardState.Alert:
                 yield return new WaitForSeconds(WaitSeconds);
+                
+                agent.speed = idleSpeed;
                 state = GuardState.Idle;
+
                 if (playerDetection)
                 {
                     playerDetection = false;
