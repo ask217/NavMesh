@@ -11,6 +11,7 @@ public class Guard : MonoBehaviour
         Idle,
         Alert,
         combat,
+        sleep,
     }
 
     NavMeshAgent agent;
@@ -40,6 +41,8 @@ public class Guard : MonoBehaviour
 
     int NavigationStep = 0;
 
+    bool isSleep;
+
 
     void Start()
     {
@@ -50,6 +53,7 @@ public class Guard : MonoBehaviour
 
         playerDetection = false;
         NavigationStep = 0;
+        isSleep = false;
     }
 
     void Update()
@@ -60,17 +64,20 @@ public class Guard : MonoBehaviour
             target = GameObject.FindWithTag("Player").transform;
         }
 
-        switch (state)
+        if (!isSleep)
         {
-            case GuardState.Idle:
-                Move();
-                break;
-            case GuardState.Alert:
-                Alert();
-                break;
-            case GuardState.combat:
-                Targeting();
-                break;
+            switch (state)
+            {
+                case GuardState.Idle:
+                    Move();
+                    break;
+                case GuardState.Alert:
+                    Alert();
+                    break;
+                case GuardState.combat:
+                    Targeting();
+                    break;
+            }
         }
         #endregion
 
@@ -157,7 +164,7 @@ public class Guard : MonoBehaviour
 
     void Alert()
     {
-        
+
         angleRange = 120f;
         radius = 7f;
 
@@ -204,7 +211,7 @@ public class Guard : MonoBehaviour
         playerDetection = true;
 
         state = GuardState.Alert;
-        
+
         agent.speed = AlertSpeed;
 
         agent.destination = playerPos;
@@ -220,6 +227,19 @@ public class Guard : MonoBehaviour
         agent.destination = wayPoint[curNode].position;
 
         curNode++;
+    }
+
+    public void Sleep()
+    {
+        isSleep = true;
+
+        StartCoroutine(Sleeping());
+    }
+
+    IEnumerator Sleeping()
+    {
+        yield return new WaitForSeconds(10f);
+        isSleep = false;
     }
 
     IEnumerator Navigation()
@@ -262,7 +282,7 @@ public class Guard : MonoBehaviour
         {
             case GuardState.Alert:
                 yield return new WaitForSeconds(WaitSeconds);
-                
+
                 agent.speed = idleSpeed;
                 state = GuardState.Idle;
 
