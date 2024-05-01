@@ -6,10 +6,16 @@ using UnityEngine.EventSystems;
 public class FirstPersonPlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
-    public float moveSpeed;
+    private float moveSpeed;
+    public float walkSpeed;
+    public float sprintSpeed;
+
     public float movePower;
 
     public float groundDrag;
+
+    [Header("Keybinds")]
+    public KeyCode sprintKey  = KeyCode.LeftShift;
 
     [Header("Ground Check")]
     public float playerHeight;
@@ -24,6 +30,14 @@ public class FirstPersonPlayerMovement : MonoBehaviour
     Vector3 direction;
 
     Rigidbody rb;
+    
+    MovementState state;
+
+    public enum MovementState
+    {
+        walking,
+        sprint
+    }
 
     void Start()
     {
@@ -58,6 +72,18 @@ public class FirstPersonPlayerMovement : MonoBehaviour
     {
         inputH = Input.GetAxisRaw("Horizontal");
         inputV = Input.GetAxisRaw("Vertical");
+    }
+
+    private void StateHandle()
+    {
+        if(grounded && Input.GetKey(sprintKey))
+        {
+            state = MovementState.sprint;
+        }
+        else if(grounded)
+        {
+            state = MovementState.walking;
+        }
     }
 
     private void PlayerMove()
