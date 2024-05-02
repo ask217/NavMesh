@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.UI;
 using UnityEngine.AI;
+using Unity.VisualScripting;
 
 public class Guard : MonoBehaviour
 {
@@ -27,6 +29,7 @@ public class Guard : MonoBehaviour
     public float radius = 3f; // 탐색 범위 거리
 
     bool isCollision = false;
+    bool isPlayerCollision = false;
 
     // 타겟팅 관련 변수
     RaycastHit hitInfo;
@@ -43,6 +46,12 @@ public class Guard : MonoBehaviour
 
     bool isSleep;
 
+    //상태 변화 관련 변수
+    public Image stateIcon;
+    public Image sleepIcon;
+    public Sprite alertIcon;
+    public Sprite combatIcon;
+    public Camera cam;
 
     void Start()
     {
@@ -54,6 +63,7 @@ public class Guard : MonoBehaviour
         playerDetection = false;
         NavigationStep = 0;
         isSleep = false;
+        cam.gameObject.SetActive(false);
     }
 
     void Update()
@@ -66,6 +76,8 @@ public class Guard : MonoBehaviour
 
         if (!isSleep)
         {
+            sleepIcon.gameObject.SetActive(false);
+
             switch (state)
             {
                 case GuardState.Idle:
@@ -76,6 +88,8 @@ public class Guard : MonoBehaviour
                     break;
                 case GuardState.combat:
                     Targeting();
+                    break;
+                case GuardState.sleep:
                     break;
             }
         }
@@ -111,13 +125,33 @@ public class Guard : MonoBehaviour
 
         if ((!agent.pathPending && agent.remainingDistance < 3f) && playerDetection)
         {
-            StartCoroutine(Navigation());
+            //TODO: 주변 탐색
+        }
+
+        if (isCollision)
+        {
+            if (Physics.Raycast(transform.position, target.position - transform.position, out hitInfo) && !GameManager.instance.isGameOver)
+            {
+                print("HitInfo: " + hitInfo.transform.name);
+                if (hitInfo.transform.tag == target.tag && !isSleep)
+                {
+                    isPlayerCollision = true;
+
+                    state = GuardState.combat;
+
+                    agent.speed = AlertSpeed;
+                }
+                else
+                {
+                    isPlayerCollision = false;
+                }
+            }
         }
 
         #region 디버깅
 
         // print("isCollision: " + isCollision);
-        // print("Guard State: " + state);
+        print("Guard State: " + state);
 
         // if (hitInfo.transform != null)
         // {
@@ -129,26 +163,12 @@ public class Guard : MonoBehaviour
 
     void Move()
     {
-        if (!playerDetection)
+        if (!playerDetection && !isSleep)
         {
-            angleRange = 75f;
-            radius = 5f;
+            angleRange = 100f;
+            radius = 10f;
 
-            if (isCollision)
-            {
-                RaycastHit hitInfo;
-
-                if (Physics.Raycast(transform.position, target.position - transform.position, out hitInfo) && !GameManager.instance.isGameOver)
-                {
-                    print("HitInfo: " + hitInfo.transform.name);
-                    if (hitInfo.transform.tag == target.tag)
-                    {
-                        state = GuardState.combat;
-
-                        agent.speed = AlertSpeed;
-                    }
-                }
-            }
+            stateIcon.gameObject.SetActive(false);
 
             if (!agent.pathPending && agent.remainingDistance < 2f)
             {
@@ -164,9 +184,11 @@ public class Guard : MonoBehaviour
 
     void Alert()
     {
+        stateIcon.gameObject.SetActive(true);
+        stateIcon.sprite = alertIcon;
 
-        angleRange = 120f;
-        radius = 7f;
+        angleRange = 170f;
+        radius = 15f;
 
         if (!playerDetection)
         {
@@ -179,12 +201,15 @@ public class Guard : MonoBehaviour
 
     void Targeting()
     {
-        if (!isCollision)
+        if (!isPlayerCollision)
         {
             StartCoroutine(ModeChanger(3f));
         }
         else
         {
+            stateIcon.gameObject.SetActive(true);
+            stateIcon.sprite = combatIcon;
+
             if (agent.isStopped == true)
             {
                 agent.isStopped = false;
@@ -206,15 +231,36 @@ public class Guard : MonoBehaviour
         }
     }
 
+    public void Damaged()
+    {
+        StopAllCoroutines();
+
+        state = GuardState.sleep;
+
+        isSleep = true;
+        
+        stateIcon.gameObject.SetActive(false);
+        sleepIcon.gameObject.SetActive(true);
+
+        agent.isStopped = true;
+        
+        StartCoroutine(Sleeping());
+    }
+
     public void CCTVDetection(Vector3 playerPos)
     {
-        playerDetection = true;
+        if (!isSleep)
+        {
+            playerDetection = true;
 
-        state = GuardState.Alert;
+            state = GuardState.Alert;
 
-        agent.speed = AlertSpeed;
+            agent.speed = AlertSpeed;
 
-        agent.destination = playerPos;
+            agent.destination = playerPos;
+
+            StartCoroutine(Cam());
+        }
     }
 
     private void MoveToNext()
@@ -229,51 +275,44 @@ public class Guard : MonoBehaviour
         curNode++;
     }
 
-    public void Sleep()
+    IEnumerator Cam()
     {
-        isSleep = true;
-
-        StartCoroutine(Sleeping());
+        cam.gameObject.SetActive(true);
+        yield return new WaitForSeconds(3f);
+        cam.gameObject.SetActive(false);
     }
 
     IEnumerator Sleeping()
     {
-        yield return new WaitForSeconds(10f);
+        print("sleeping start");
+        yield return new WaitForSeconds(3f);
+
         isSleep = false;
-    }
-
-    IEnumerator Navigation()
-    {
-        print("Navigation Start");
-        agent.isStopped = true;
-        StartCoroutine(Rotate(0.5f, -60));
-        yield return new WaitForSeconds(1f);
-        yield return new WaitUntil(() => NavigationStep > 0);
-        StartCoroutine(Rotate(1f, 120));
-        yield return new WaitForSeconds(1f);
-        yield return new WaitUntil(() => NavigationStep > 1);
+        playerDetection = false;
         agent.isStopped = false;
-        NavigationStep = 0;
+
+        state = GuardState.Alert;
+
         MoveToNext();
-        StartCoroutine(ModeChanger(15f));
+        print("sleeping end");
     }
 
-    IEnumerator Rotate(float duration, float yAngle)
-    {
-        Vector3 startForward = transform.forward;
-        Vector3 targetForward = Quaternion.Euler(0f, yAngle, 0f) * startForward;
-        float ratio = 0f;
-        float vel = 1f / duration;
-        while (ratio < 1f)
-        {
-            transform.forward = Vector3.Slerp(startForward, targetForward, ratio);
-            yield return null;
-            ratio += Time.deltaTime * vel;
-        }
-        transform.forward = targetForward;
+    // IEnumerator Rotate(float duration, float yAngle)
+    // {
+    //     Vector3 startForward = transform.forward;
+    //     Vector3 targetForward = Quaternion.Euler(0f, yAngle, 0f) * startForward;
+    //     float ratio = 0f;
+    //     float vel = 1f / duration;
+    //     while (ratio < 1f)
+    //     {
+    //         transform.forward = Vector3.Slerp(startForward, targetForward, ratio);
+    //         yield return null;
+    //         ratio += Time.deltaTime * vel;
+    //     }
+    //     transform.forward = targetForward;
 
-        NavigationStep++;
-    }
+    //     NavigationStep++;
+    // }
 
     IEnumerator ModeChanger(float WaitSeconds)
     {

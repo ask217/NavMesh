@@ -4,19 +4,14 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    private List<GameObject> bullet;
-
-
-    void Start()
-    {
-        
-    }
+    public GameObject bulletFactory;
+    public Transform firePos;
 
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
-
+            GameObject bullet = Instantiate(bulletFactory, firePos.position, firePos.rotation);
         }
     }
 }

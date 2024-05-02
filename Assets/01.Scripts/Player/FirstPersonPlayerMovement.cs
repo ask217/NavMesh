@@ -51,6 +51,7 @@ public class FirstPersonPlayerMovement : MonoBehaviour
 
         PlayerInput();
         SpeedControl();
+        StateHandle();
 
         //Gound Drag
         if(grounded)
@@ -79,10 +80,12 @@ public class FirstPersonPlayerMovement : MonoBehaviour
         if(grounded && Input.GetKey(sprintKey))
         {
             state = MovementState.sprint;
+            moveSpeed = sprintSpeed;
         }
         else if(grounded)
         {
             state = MovementState.walking;
+            moveSpeed = walkSpeed;
         }
     }
 
