@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bda170ec4abc3e40982a550e73179d9, type: 3}
+  m_Name: YellowGem
+  m_EditorClassIdentifier: 
+  id: YellowGem
+  displayName: Yellow Gem
+  description: "\uB178\uB780\uC0C9 \uBCF4\uC11D, \uC5B4\uB518\uAC00 \uC0AC\uC6A9\uD560
+    \uC218 \uC788\uC744\uAC83 \uAC19\uB2E4."
+  icon: {fileID: 0}
+  prefab: {fileID: 4070880630364545585, guid: d60b2d4000153a14ca37cc910114a075, type: 3}
