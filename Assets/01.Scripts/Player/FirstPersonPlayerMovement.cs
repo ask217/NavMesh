@@ -67,7 +67,7 @@ public class FirstPersonPlayerMovement : MonoBehaviour
             rb.drag = 0f;
         }
 
-        
+        if(Physics.Raycast())
     }
 
     void FixedUpdate()
@@ -120,7 +120,7 @@ public class FirstPersonPlayerMovement : MonoBehaviour
 #if UNITY_EDITOR
         Gizmos.color = Color.blue;
         
-        Gizmos.DrawLine();
+        //Gizmos.DrawLine();
 #endif
     }
 }
