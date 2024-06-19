@@ -16,5 +16,6 @@ MonoBehaviour:
   displayName: Yellow Gem
   description: "\uB178\uB780\uC0C9 \uBCF4\uC11D, \uC5B4\uB518\uAC00 \uC0AC\uC6A9\uD560
     \uC218 \uC788\uC744\uAC83 \uAC19\uB2E4."
-  icon: {fileID: 0}
+  value: 0
+  icon: {fileID: 21300000, guid: 6a96c0166f129af49b33c8dc7d82feff, type: 3}
   prefab: {fileID: 4070880630364545585, guid: d60b2d4000153a14ca37cc910114a075, type: 3}

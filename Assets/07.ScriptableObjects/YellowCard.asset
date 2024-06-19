@@ -16,5 +16,6 @@ MonoBehaviour:
   displayName: Card Key Lv3
   description: "\uC2DC\uD050\uB9AC\uD2F0 3\uB2E8\uACC4 \uBB38\uC744 \uC5F4 \uC218
     \uC788\uB294 \uCE74\uB4DC\uD0A4"
-  icon: {fileID: 0}
+  value: 0
+  icon: {fileID: 21300000, guid: 29a621983ab38dd41a5e2de8af28d0d5, type: 3}
   prefab: {fileID: 3457425745895948371, guid: 99a93891d2cd1764890655fe0f292ce8, type: 3}

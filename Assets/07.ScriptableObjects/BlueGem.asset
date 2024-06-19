@@ -16,5 +16,6 @@ MonoBehaviour:
   displayName: Blue Gem
   description: "\uD478\uB978 \uBCF4\uC11D, \uC5B4\uB518\uAC00 \uC0AC\uC6A9\uD560
     \uC218 \uC788\uC744\uAC83 \uAC19\uB2E4."
-  icon: {fileID: 0}
+  value: 0
+  icon: {fileID: 21300000, guid: 1b8cb7fddc90d2b4180c889028d4dd99, type: 3}
   prefab: {fileID: 7304436666822821170, guid: aa328c17b09069d4ea46ccddbf8c7dc0, type: 3}

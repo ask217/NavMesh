@@ -33,6 +33,8 @@ public class FirstPersonPlayerMovement : MonoBehaviour
     
     MovementState state;
 
+    Camera cam;
+
     public enum MovementState
     {
         walking,
@@ -43,6 +45,8 @@ public class FirstPersonPlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+
+        cam = Camera.main;
     }
     void Update()
     {
@@ -62,6 +66,8 @@ public class FirstPersonPlayerMovement : MonoBehaviour
         {
             rb.drag = 0f;
         }
+
+        
     }
 
     void FixedUpdate()
@@ -107,5 +113,14 @@ public class FirstPersonPlayerMovement : MonoBehaviour
 
             rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+#if UNITY_EDITOR
+        Gizmos.color = Color.blue;
+        
+        Gizmos.DrawLine();
+#endif
     }
 }
