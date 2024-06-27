@@ -9,7 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 527909091811343108}
-  m_Layer: 0
+  - component: {fileID: -4996251139158327695}
+  - component: {fileID: -4274098026651881598}
+  m_Layer: 12
   m_Name: SmallKey
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24,14 +26,48 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7401356958111227722}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.24999973, y: -0.61237246, z: 0.43301228, w: 0.61237293}
-  m_LocalPosition: {x: 0.050978716, y: -0.026158875, z: 0.0057174005}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4056134077855151450}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 12.953, y: -82.631, z: 59.132}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-4996251139158327695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7401356958111227722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e64dc8e97f7244f802dc53d271e13e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemData: {fileID: 11400000, guid: 776e585efda70004c9bfd5c31aa92ee2, type: 2}
+--- !u!65 &-4274098026651881598
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7401356958111227722}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.175663, y: 0.059012737, z: 0.17497405}
+  m_Center: {x: 0.027453927, y: -0.0022468325, z: 0.03415355}
 --- !u!1001 &4593936642642072241
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -91,6 +127,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 501a19826a840da4a93f946d0d749a6e, type: 3}
       propertyPath: m_Name
       value: SmallKey
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 501a19826a840da4a93f946d0d749a6e, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

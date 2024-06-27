@@ -62,6 +62,8 @@ public class FirstPersonPlayerMovement : MonoBehaviour
         {
             rb.drag = 0f;
         }
+
+        DataManager.instance.saveData.playerPos = transform;
     }
 
     void FixedUpdate()

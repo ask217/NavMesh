@@ -254,7 +254,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 3
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -326,24 +326,8 @@ MonoBehaviour:
   pathFolder: 000.Arts\Images\ItemIcons
   sceneObjects:
   - {fileID: 593542545306403599}
-  - {fileID: 4500736954455257709}
-  - {fileID: 7394076505639190255}
-  - {fileID: 8455398680496798503}
-  - {fileID: 3624595481769366763}
-  - {fileID: 2024831242215387876}
-  - {fileID: 7260451538852478999}
-  - {fileID: 4319904324635186220}
-  - {fileID: 8809102689835431828}
   dataObjects:
   - {fileID: 11400000, guid: a5f96a7a602bc8f49a3c20581cae4bc8, type: 2}
-  - {fileID: 11400000, guid: f44730b37987c0a4fbf31e403662c0be, type: 2}
-  - {fileID: 11400000, guid: b26a5647f5025fd46939caea5ffdaf90, type: 2}
-  - {fileID: 11400000, guid: f0bc4deda8d24a54a98ce4d0571ef9c1, type: 2}
-  - {fileID: 11400000, guid: 776e585efda70004c9bfd5c31aa92ee2, type: 2}
-  - {fileID: 11400000, guid: aea9a8df4a38b564385078f7a7ad142f, type: 2}
-  - {fileID: 11400000, guid: 4f1b0e8daf3418f4381324b0f3d2e826, type: 2}
-  - {fileID: 11400000, guid: 90363bcdc9147b843926c30fc8a9e503, type: 2}
-  - {fileID: 11400000, guid: b174e96c2a74024429a3e13303038c6d, type: 2}
 --- !u!1 &593542545306403599 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7694758812702092285, guid: b2cdc8a714d1ec342aea328e97c2dbbf, type: 3}
@@ -410,26 +394,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa328c17b09069d4ea46ccddbf8c7dc0, type: 3}
---- !u!1 &2024831242215387876 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7304436666822821170, guid: aa328c17b09069d4ea46ccddbf8c7dc0, type: 3}
-  m_PrefabInstance: {fileID: 1868553672903780455}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &3624595481769366763 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7401356958111227722, guid: 8fb7a6d5262868b43b96d9ed8d1d23bc, type: 3}
-  m_PrefabInstance: {fileID: 6765633309687124792}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4319904324635186220 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1487255237889444956, guid: 49e732a301e97d041b062136e6420647, type: 3}
-  m_PrefabInstance: {fileID: 7525333462597894526}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4500736954455257709 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8323260486972398978, guid: 1f21e58e85e5b8845abe9af517820b0a, type: 3}
-  m_PrefabInstance: {fileID: 6887651791469635423}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6081192991245931889
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -849,16 +813,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77b2ac3e959c1d94b905924bbd2ddd71, type: 3}
---- !u!1 &7260451538852478999 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3879258512161324001, guid: 77b2ac3e959c1d94b905924bbd2ddd71, type: 3}
-  m_PrefabInstance: {fileID: 7218371705633350222}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7394076505639190255 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3457425745895948371, guid: 99a93891d2cd1764890655fe0f292ce8, type: 3}
-  m_PrefabInstance: {fileID: 6081192991245931889}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7525333462597894526
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -920,16 +874,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49e732a301e97d041b062136e6420647, type: 3}
---- !u!1 &8455398680496798503 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4462303370445463761, guid: a5085762eac898c48af40166457ddc88, type: 3}
-  m_PrefabInstance: {fileID: 6476905848901448530}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8809102689835431828 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4070880630364545585, guid: d60b2d4000153a14ca37cc910114a075, type: 3}
-  m_PrefabInstance: {fileID: 6464870827806317417}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
